@@ -196,35 +196,3 @@ def checkpe(file):
     pe_features = [data[x] for x in features]
     res = clf.predict([pe_features])[0]
     return res
-
-    # print("")
-    # print(
-    #     (
-    #         "%s is %s"
-    #         % (
-    #             file,
-    #             ["malicious", "clean"][res],
-    #         )
-    #     )
-    # )
-
-    # parser = argparse.ArgumentParser(description="Detect malicious files")
-    # parser.add_argument("FILE", help="File to be tested")
-    # args = parser.parse_args()
-    # Load classifier
-
-    # data = extract_infos(args.FILE)
-
-    # pe_features = [data[x] for x in features]
-
-    # res = clf.predict([pe_features])[0]
-    # print("")
-    # print(
-    #     (
-    #         "%s is %s"
-    #         % (
-    #             file,
-    #             ["mmalicious", "clean"][res],
-    #         )
-    #     )
-    # )
