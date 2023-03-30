@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 import argparse
 import pickle
 import requests
@@ -99,7 +98,7 @@ def get_data(url):
 def feature_extraction(data):
     """Extract the features from manalyzer data"""
     features = {}
-    md5 = data.keys()[0]
+    md5 = list(data.keys())[0]
     data = data[md5]
     features["md5"] = md5
     features["Machine"] = MACHINE_TYPES[data["PE Header"]["Machine"]]
@@ -133,8 +132,9 @@ def feature_extraction(data):
     features["MinorSubsystemVersion"] = int(ssv[1])
     features["Subsystem"] = SUBSYSTEMS[data["Image Optional Header"]["Subsystem"]]
     features["DllCharacteristics"] = 0
-    for char in data["Image Optional Header"]["DllCharacteristics"]:
-        features["DllCharacteristics"] += DLL_CHARACTERISTICS[char]
+    # for char in data["Image Optional Header"]["DllCharacteristics"]:
+    #     print(features["DllCharacteristics"])
+    #     # features["DllCharacteristics"] += DLL_CHARACTERISTICS[char]
     features["SizeOfStackReserve"] = data["Image Optional Header"]["SizeofStackReserve"]
     features["SizeOfStackCommit"] = data["Image Optional Header"]["SizeofStackCommit"]
     features["SizeOfHeapReserve"] = data["Image Optional Header"]["SizeofHeapReserve"]
@@ -146,35 +146,35 @@ def feature_extraction(data):
 
     # Sections
     features["SectionsNb"] = len(data["Sections"])
-    entropy = map(lambda x: x["Entropy"], data["Sections"].values())
+    entropy = [x["Entropy"] for x in list(data["Sections"].values())]
     features["SectionsMeanEntropy"] = sum(entropy) / float(len(entropy))
     features["SectionsMinEntropy"] = min(entropy)
     features["SectionsMaxEntropy"] = max(entropy)
-    raw_sizes = map(lambda x: x["SizeOfRawData"], data["Sections"].values())
+    raw_sizes = [x["SizeOfRawData"] for x in list(data["Sections"].values())]
     features["SectionsMeanRawsize"] = sum(raw_sizes) / float(len(raw_sizes))
     features["SectionsMinRawsize"] = min(raw_sizes)
     features["SectionsMaxRawsize"] = max(raw_sizes)
-    virtual_sizes = map(lambda x: x["VirtualSize"], data["Sections"].values())
+    virtual_sizes = [x["VirtualSize"] for x in list(data["Sections"].values())]
     features["SectionsMeanVirtualsize"] = sum(virtual_sizes) / float(len(virtual_sizes))
     features["SectionsMinVirtualsize"] = min(virtual_sizes)
     features["SectionsMaxVirtualsize"] = max(virtual_sizes)
 
     # Imports
-    if "Imports" in data.keys():
+    if "Imports" in list(data.keys()):
         features["ImportsNbDLL"] = len(data["Imports"])
-        features["ImportsNb"] = sum(map(len, data["Imports"].values()))
+        features["ImportsNb"] = sum(map(len, list(data["Imports"].values())))
     else:
         features["ImportsNbDLL"] = 0
         features["ImportsNb"] = 0
 
     # Resources
-    if "Resources" in data.keys():
+    if "Resources" in list(data.keys()):
         features["ResourcesNb"] = len(data["Resources"])
-        entropy = map(lambda x: x["Entropy"], data["Resources"].values())
+        entropy = [x["Entropy"] for x in list(data["Resources"].values())]
         features["ResourcesMeanEntropy"] = sum(entropy) / float(len(entropy))
         features["ResourcesMinEntropy"] = min(entropy)
         features["ResourcesMaxEntropy"] = max(entropy)
-        sizes = map(lambda x: x["Size"], data["Resources"].values())
+        sizes = [x["Size"] for x in list(data["Resources"].values())]
         features["ResourcesMeanSize"] = sum(sizes) / float(len(sizes))
         features["ResourcesMinSize"] = min(sizes)
         features["ResourcesMaxSize"] = max(sizes)
@@ -187,8 +187,8 @@ def feature_extraction(data):
         features["ResourcesMinSize"] = 0
         features["ResourcesMaxSize"] = 0
 
-    if "Version Info" in data.keys():
-        features["VersionInformationSize"] = len(data["Version Info"].keys())
+    if "Version Info" in list(data.keys()):
+        features["VersionInformationSize"] = len(list(data["Version Info"].keys()))
     else:
         features["VersionInformationSize"] = 0
 
@@ -213,7 +213,7 @@ if __name__ == "__main__":
             os.path.join(
                 os.path.dirname(os.path.realpath(__file__)), "classifier/features.pkl"
             ),
-            "r",
+            "rb",
         ).read()
     )
 
@@ -232,6 +232,8 @@ if __name__ == "__main__":
     else:
         # Extract the features
         data_pe = feature_extraction(data)
-        pe_features = map(lambda x: data_pe[x], features)
+        pe_features = [data_pe[x] for x in features]
         res = clf.predict([pe_features])[0]
-        print("The file %s is %s" % (data_pe["md5"], ["malicious", "legitimate"][res]))
+        print(
+            ("The file %s is %s" % (data_pe["md5"], ["malicious", "legitimate"][res]))
+        )
