@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home</title>
+    <!-- <link rel="stylesheet" href="style1.css"> -->
 </head>
 
 <style>
-    /* Styling for try1 ID */
     /* Styling for try1 ID */
     #try1 {
         display: flex;
@@ -109,13 +109,17 @@
 </style>
 
 <body>
-    <form methods="POST" enctype="multipart/form-data">
-        {{form.hidden_tag()}}
+    <h1>Flask File Uploads Tutorial</h1>
+
+    <form method='POST' enctype='multipart/form-data'>
+
         <div id="try1">
+            {{form.hidden_tag()}}
             {{form.file()}}
             {{form.submit()}}
         </div>
     </form>
+    <h6></h6>
 </body>
 
 </html>

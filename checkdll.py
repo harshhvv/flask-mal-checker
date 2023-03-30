@@ -176,11 +176,7 @@ def extract_infos(fpath):
     return res
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Detect malicious files")
-    parser.add_argument("FILE", help="File to be tested")
-    args = parser.parse_args()
-    # Load classifier
+def checkpe(file):
     clf = joblib.load(
         os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "classifier/classifier.pkl"
@@ -195,18 +191,40 @@ if __name__ == "__main__":
         ).read()
     )
 
-    data = extract_infos(args.FILE)
-
+    # with open(file, "rb") as f:
+    data = extract_infos(file)
     pe_features = [data[x] for x in features]
-
     res = clf.predict([pe_features])[0]
-    print("")
-    print(
-        (
-            "%s is %s"
-            % (
-                args.FILE,
-                ["mmalicious", "clean"][res],
-            )
-        )
-    )
+    return res
+
+    # print("")
+    # print(
+    #     (
+    #         "%s is %s"
+    #         % (
+    #             file,
+    #             ["malicious", "clean"][res],
+    #         )
+    #     )
+    # )
+
+    # parser = argparse.ArgumentParser(description="Detect malicious files")
+    # parser.add_argument("FILE", help="File to be tested")
+    # args = parser.parse_args()
+    # Load classifier
+
+    # data = extract_infos(args.FILE)
+
+    # pe_features = [data[x] for x in features]
+
+    # res = clf.predict([pe_features])[0]
+    # print("")
+    # print(
+    #     (
+    #         "%s is %s"
+    #         % (
+    #             file,
+    #             ["mmalicious", "clean"][res],
+    #         )
+    #     )
+    # )
