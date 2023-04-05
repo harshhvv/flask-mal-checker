@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, send_from_directory
 from training import train_data
 from flask_wtf import FlaskForm
 from wtforms import FileField
@@ -25,9 +25,32 @@ class uploadFileForm(FlaskForm):
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "root"
 app.config["UPLOAD_FOLDER"] = "uploads/files"
+app.config["DOWNLOAD_FOLDER"] = "downloads"
 
 
 @app.route("/", methods=["GET", "POST"])
+def listFiles():
+    files = os.listdir(app.config["DOWNLOAD_FOLDER"])
+    return render_template("file_list.html", files=files)
+
+
+@app.route("/download/<filename>")
+def download_file(filename):
+    # Call check_dll_file to check if the file is malicious
+    fhandle = "downloads/" + filename
+    is_malicious = checkpe(fhandle)
+
+    # If the file is malicious, don't allow the download
+    if is_malicious == 0:
+        return "File is malicious and cannot be downloaded."
+
+    # If the file is not malicious, allow the download
+    return send_from_directory(
+        app.config["DOWNLOAD_FOLDER"], filename, as_attachment=True
+    )
+
+
+@app.route("/upload", methods=["GET", "POST"])
 def home():
     form = uploadFileForm()
 
@@ -62,4 +85,4 @@ def aftercheck(ans):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="192.168.122.226", ssl_context="adhoc")
