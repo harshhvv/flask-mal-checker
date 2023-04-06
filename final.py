@@ -25,7 +25,7 @@ class uploadFileForm(FlaskForm):
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "root"
 app.config["UPLOAD_FOLDER"] = "uploads/files"
-app.config["DOWNLOAD_FOLDER"] = "downloads"
+app.config["DOWNLOAD_FOLDER"] = "uploads/files"  # "downloads"
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -37,7 +37,7 @@ def listFiles():
 @app.route("/download/<filename>")
 def download_file(filename):
     # Call check_dll_file to check if the file is malicious
-    fhandle = "downloads/" + filename
+    fhandle = "uploads/files/" + filename
     is_malicious = checkpe(fhandle)
 
     # If the file is malicious, don't allow the download
@@ -85,4 +85,4 @@ def aftercheck(ans):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="192.168.122.155", ssl_context="adhoc")
+    app.run(debug=True, host="0.0.0.0")  # , ssl_context="adhoc")

@@ -3,6 +3,8 @@
 
 <head>
     <title>List of Files</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/liststyle.css') }}">
+
 </head>
 
 <body>
@@ -12,6 +14,8 @@
         <li><a href="/download/{{ file }}">{{ file }}</a></li>
         {% endfor %}
     </ul>
+
+
 </body>
 
 </html>
