@@ -52,10 +52,7 @@ def train_data():
     algorithms = {
         "DecisionTree": tree.DecisionTreeClassifier(max_depth=10),
         "RandomForest": ske.RandomForestClassifier(n_estimators=50),
-        "GradientBoosting": ske.GradientBoostingClassifier(n_estimators=50),
-        "AdaBoost": ske.AdaBoostClassifier(n_estimators=100),
         "GNB": GaussianNB(),
-        "XGBoost": XGBClassifier(max_depth=20, learning_rate=0.3, n_estimators=150),
     }
 
     results = {}
